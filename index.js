@@ -3,7 +3,6 @@ const cheerio = require('cheerio');
 
 const parse = async (serch, art) => {
 	const searchDecode = encodeURI(serch)
-	console.log(searchDecode);
 	let res = [];
 	const getHTML = async (url) => {
 		const { data } = await axios.get(url);
@@ -32,8 +31,8 @@ const parse = async (serch, art) => {
 };
 
 // parse('симпл димпл').then(mas => );
-const compare = (mas) => {
-
+const compare = async (mas) => {
+	let reqs = []
 	let i = 0;
 
 	while (i <= (mas.length - 1)) {
@@ -44,10 +43,25 @@ const compare = (mas) => {
 				.then((articuls) => {
 					articuls.mass.forEach((el, a) => {
 						if (+el == articuls.artic) {
-							console.log(`${articuls.artic} запрос - '${articuls.name}' найдено на ${a + 1} месте, вкладка: ${Math.floor((a + 1) / 100) + 1}, место: ${(a + 1) % 100}`);
+							// console.log(`${articuls.artic} запрос - '${articuls.name}' найдено на ${a + 1} месте, вкладка: ${Math.floor((a + 1) / 100) + 1}, место: ${(a + 1) % 100}`);
+							let obj = {
+								articul: articuls.artic,
+								zap: articuls.name,
+								yes: true,
+								level: (a + 1),
+								vkl: (Math.floor((a + 1) / 100) + 1),
+								mest: ((a + 1) % 100),
+							};
+							reqs.push(obj);
 						};
 					});
-					console.log(`${articuls.artic} запрос: ${articuls.name}, найдено ----------`)
+					// console.log(`${articuls.artic} запрос: ${articuls.name}, найдено ----------`)
+					let obj = {
+						articul: articuls.artic,
+						zap: articuls.name,
+						yes: false,
+					};
+					reqs.push(obj);
 				});
 
 		});
@@ -55,7 +69,7 @@ const compare = (mas) => {
 		i = i + 2;
 
 	};
-
+	return reqs
 };
 const vikup = [
 	26259909, ['поп ит', 'пупырка', 'Pop it', 'шарф палантин', 'шарфы, платки - палантины женские'],
@@ -76,5 +90,4 @@ const vikup = [
 	// 		'шелковый палантин', 'шарф палантин', 'шарфик женский летний', 'палантин платок', 'шарфы женские'],
 	// 	9879360, ['шарф женский', 'шелковый шарф', 'шарф платок палантин', 'шарф палантин', 'шарфы, платки - палантины женские',
 	// 		'шелковый палантин', 'шарф палантин', 'шарфик женский летний', 'палантин платок', 'шарфы женские'],
-]
-compare(vikup);
+	compare(vikup).then((out) => console.log(out))
